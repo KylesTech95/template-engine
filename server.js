@@ -27,6 +27,8 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
 // database connection reply
 myDB(async client => {
   const myDataBase = await client.db('database').collection('users');
@@ -40,9 +42,16 @@ myDB(async client => {
       showLogin:true
     });
   });
+
+  // routes
   app.route('/login').post(passport.authenticate('local', { failureRedirect: '/' }), (req, res) => {
     res.redirect('/profile');
   })
+  app.route('/profile').get(ensureAuthenticated, (req,res) => {
+    res.render('profile');
+ });
+
+
 
   app.route('/profile').get((req,res) => {
     res.render('profile');
@@ -85,15 +94,21 @@ passport.use(new LocalStrategy((username,password,done)=>{
     }
     return res
   })
-}))
-
-
+  }))
   // Be sure to add this...
 }).catch(e => {
   app.route('/').get((req, res) => {
     res.render('index', { title: e, message: 'Unable to connect to database' });
   });
 });
+
+// ensure uthenticated function
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/');
+};
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
