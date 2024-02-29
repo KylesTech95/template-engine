@@ -27,11 +27,22 @@ module.exports = function(app,myDataBase){
       req.logout();
       res.redirect('/')
      })
+/*OAuth require you to have at least a Client ID and a Client Secret which is a way 
+for the service to verify who the authentication request is coming from and if it is valid */
+
+
+
+
+
+
+
+
+
+
 
 
      // route to register a new user.
-     app.route('/register')
-     .post((req, res, next) => {
+     app.route('/register').post((req, res, next) => {
        myDataBase.findOne({ username: req.body.username }, (err, user) => {
          if (err) {
            next(err);
