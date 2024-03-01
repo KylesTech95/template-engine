@@ -72,6 +72,11 @@ for the service to verify who the authentication request is coming from and if i
          res.redirect('/profile');
        }
      );
+
+     app.route('/auth/github').get(passport.authenticate('github'))
+     app.route('/auth/github/callback').get(passport.authenticate('github',{failureRedirect:'/'}),(req,res)=>{
+      res.redirect('/profile')
+     })
        // brcypt
      /*You will need to handle hashing in 2 key areas: 
      where you handle registering/saving a new account, and when you check to see that a password is correct on login */
